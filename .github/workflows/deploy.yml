@@ -1,0 +1,32 @@
+name: Deploy to Live Website
+
+# The Event: Trigger this when code is pushed to the main branch
+on:
+  push:
+    branches: ["main"]
+
+# Granting the robot permission to modify our live GitHub Pages site
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  publish-my-site:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Download my code
+        uses: actions/checkout@v4
+
+      - name: 📦 Package the website files
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.' 
+
+      - name: 🚀 Publish to the internet
+        id: deployment
+        uses: actions/deploy-pages@v4
